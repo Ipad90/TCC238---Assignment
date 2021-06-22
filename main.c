@@ -21,7 +21,7 @@ int main(void) {
             case 1:
                 printf("Viewing item. \n");
                 //  todo: view item
-                // searchItem("Pepega");
+                viewItem();
                 break;
             case 2:
                 printf("Adding item. \n");
@@ -41,6 +41,7 @@ int main(void) {
                 //  just loop back
                 break;
         }
+        printf("\n");
     }
 
     return 0;

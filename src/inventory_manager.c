@@ -13,7 +13,7 @@ void searchItem(char item_name[])
 
 void viewItem()
 {
-    
+    readFile();
 }
 
 void addItem()
@@ -32,6 +32,7 @@ void addItem()
         strcpy(buffer, item_name);
         strcat(buffer, "|");
         strcat(buffer, item_quantity);
+        strcat(buffer, "\n");
         addToFile(buffer);
     } else {
         createFile();

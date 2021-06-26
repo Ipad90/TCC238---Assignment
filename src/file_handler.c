@@ -25,23 +25,19 @@ unsigned short getFileLines()
     return lines;
 }
 
-char** readFile()
+void readFile(char existing_items[512][255])
 {
-    FILE *fp;
     unsigned short file_lines = getFileLines();
-    char ** file_contents = malloc(file_lines * sizeof(char*));
+
+    FILE *fp = NULL; 
 
     fp = fopen(DATA_FILE, "r");
 
     for (unsigned short i = 0; i < file_lines; i++) {
-        char temp[255];
-        fscanf(fp, "%s", &temp);
-        printf("%s \n", temp);
+        fgets(existing_items[i], 255, fp);
     }
 
-    fclose(fp);
-
-    return file_contents;
+    fflush(stdin);
 }
 
 void createFile()
@@ -54,9 +50,16 @@ void createFile()
 
 void addToFile(char details[])
 {
-    printf("%s", details);
     FILE *fp;
     fp = fopen(DATA_FILE, "a");
+    fprintf(fp, "%s", details);
+    fclose(fp);
+}
+
+void writeToFile(char details[])
+{
+    FILE *fp;
+    fp = fopen(DATA_FILE, "w");
     fprintf(fp, "%s", details);
     fclose(fp);
 }

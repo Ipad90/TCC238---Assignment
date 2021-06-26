@@ -1,12 +1,22 @@
+#include <math.h>
 #include <stdio.h>
+#include <stdlib.h>
 #include <string.h>
 
-void searchItem(char item_name[]);
+struct ItemDetails;
 
-void viewItem();
+void searchItem(unsigned short amount_of_items, char item_name[]);
+
+void viewItem(char action[]);
 
 void addItem();
 
 void updateItem();
 
-void removeItem();
+void deleteItem(char action[]);
+
+void saveSession();
+
+void loadFromLast();
+
+void test();

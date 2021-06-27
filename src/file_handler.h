@@ -3,8 +3,6 @@
 #include <string.h>
 
 #define DATA_FILE "data/data.csv"
-#define LSIZ 128 
-#define RSIZ 10 
 
 unsigned short checkFileExists();
 

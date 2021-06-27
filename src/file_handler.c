@@ -43,7 +43,6 @@ void readFile(char existing_items[512][255])
 void createFile()
 {
     FILE *fp;
-    printf("Creating file lmao \n");
     fp = fopen(DATA_FILE, "w");
     fclose(fp);
 }

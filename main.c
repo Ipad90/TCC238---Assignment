@@ -39,29 +39,25 @@ int main(void) {
                         continue_running = 1;
                         break;
                     case 1:
-                        //  todo: view item
-                        printf("Viewing item. \n");
+                        printf("Viewing item selected. \n");
                         printf("To view all items, type \"all\"\n");
                         printf("To view a specific item, type the name of the item. \n");
-                        scanf("%10[0-9a-zA-Z ]", input);
+                        scanf("%[0-9a-zA-Z ]", input);
                         viewItem(input);
                         break;
                     case 2:
-                        //  todo: add item
-                        printf("Adding item. \n");
+                        printf("Adding item selected. \n");
                         addItem();
                         break;
                     case 3:
-                        //  todo: update item
-                        printf("Updating item. \n");
+                        printf("Updating item selected. \n");
                         updateItem();
                         break;
                     case 4:
-                        //  todo: delete item
-                        printf("Deleting item. \n");
+                        printf("Deleting item selected. \n");
                         printf("To delete all items, type \"all\"\n");
                         printf("To delete a specific item, type the name of the item. \n");
-                        scanf("%10[0-9a-zA-Z ]", &input);
+                        scanf("%[0-9a-zA-Z ]", &input);
                         deleteItem(input);
                         break;
                     default:

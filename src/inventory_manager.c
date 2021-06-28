@@ -1,7 +1,9 @@
 #include "inventory_manager.h"
 #include "file_handler.h"
+#include "colour_print.h"
 
-typedef struct ItemDetails {
+typedef struct ItemDetails
+{
     char item_name[128];
     unsigned int item_quantity;
 } ItemDetails;
@@ -11,7 +13,8 @@ ItemDetails items[512];
 unsigned short getAmountOfitems()
 {
     unsigned short index = 0;
-    while (strcmp(items[index].item_name, "") != 0) {
+    while (strcmp(items[index].item_name, "") != 0)
+    {
         index++;
     }
     return index;
@@ -19,16 +22,19 @@ unsigned short getAmountOfitems()
 
 void searchItem(unsigned short amount_of_items, char item_name[])
 {
-    printf("Searching for item: %s \n", item_name);
-
-    for (unsigned short i = 0; i < amount_of_items; i++) {
-        if (strcmp(items[i].item_name, item_name) == 0) {
+    printf("Searching for item: ");
+    green("%s\n", item_name);
+    for (unsigned short i = 0; i < amount_of_items; i++)
+    {
+        if (strcmp(items[i].item_name, item_name) == 0)
+        {
             printf("Item found \n");
             displayIndividualItem(items[i], 1, 1);
             return;
         }
     }
-    printf("No item found with the name: %s \n", item_name);
+    red("Item '%s' does not exist.\n\n", item_name);
+
 }
 
 void viewItem(char action[])
@@ -36,17 +42,23 @@ void viewItem(char action[])
     unsigned amount_of_items = getAmountOfitems();
     unsigned short print_header = 0;
     unsigned short print_footer = 0;
-    
-    if (amount_of_items > 0) {
-        if (strcmp(action, "all") == 0) {
-            printf("Amount of items: %5hu \n", amount_of_items);
 
-            for (unsigned short i = 0; i < amount_of_items; i++) {
-                if (i >= 0) {
+    if (amount_of_items > 0)
+    {
+        if (strcmp(action, "all") == 0)
+        {
+            printf("Amount of items: ");
+            yellow("%d\n", amount_of_items);
+
+            for (unsigned short i = 0; i < amount_of_items; i++)
+            {
+                if (i >= 0)
+                {
                     print_header = 1;
                 }
 
-                if (i + 1 == amount_of_items) {
+                if (i + 1 == amount_of_items)
+                {
                     print_footer = 1;
                 }
 
@@ -55,10 +67,14 @@ void viewItem(char action[])
                 print_header = 0;
                 print_footer = 0;
             }
-        } else {
+        }
+        else
+        {
             searchItem(amount_of_items, action);
         }
-    } else {
+    }
+    else
+    {
         printf("No items to be viewed. \n");
     }
 }
@@ -68,7 +84,8 @@ void printHeaderOrFooter()
     printf("|----------|-");
 
     unsigned short i = 0;
-    while (i < DISPLAY_LENGTH) {
+    while (i < DISPLAY_LENGTH)
+    {
         printf("-");
         i++;
     }
@@ -89,28 +106,36 @@ void displayIndividualItem(struct ItemDetails item_to_display, unsigned short pr
     longest_attribute_length = (item_name_length >= item_quantity_length) ? item_name_length : item_quantity_length;
     j = (item_name_length >= item_quantity_length) ? item_quantity_length : item_name_length;
 
-    if (print_header) {
+    if (print_header)
+    {
         printHeaderOrFooter();
     }
 
-    if (item_name_length > DISPLAY_LENGTH) {
+    if (item_name_length > DISPLAY_LENGTH)
+    {
         unsigned short lines = (longest_attribute_length + DISPLAY_LENGTH - 1) / DISPLAY_LENGTH;
         unsigned short index = 0;
 
         printf("| Name     | ");
 
-        for (unsigned i = 0; i < lines; i++) {
-            for (unsigned short k = 0; k < DISPLAY_LENGTH; k++) {
+        for (unsigned i = 0; i < lines; i++)
+        {
+            for (unsigned short k = 0; k < DISPLAY_LENGTH; k++)
+            {
                 printf("%c", item_to_display.item_name[index++]);
             }
             printf(" |\n");
-            if (i < lines - 1) {
+            if (i < lines - 1)
+            {
                 printf("|          | ");
             }
         }
-    } else {
+    }
+    else
+    {
         printf("| Name     | %s", item_to_display.item_name);
-        while (item_name_length < DISPLAY_LENGTH) {
+        while (item_name_length < DISPLAY_LENGTH)
+        {
             printf(" ");
             item_name_length++;
         }
@@ -119,14 +144,16 @@ void displayIndividualItem(struct ItemDetails item_to_display, unsigned short pr
 
     printf("| Quantity | %hu", item_to_display.item_quantity);
 
-    while (item_quantity_length < DISPLAY_LENGTH) {
+    while (item_quantity_length < DISPLAY_LENGTH)
+    {
         printf(" ");
         item_quantity_length++;
     }
 
     printf(" |\n");
 
-    if (print_footer) {
+    if (print_footer)
+    {
         printHeaderOrFooter();
     }
 }
@@ -137,7 +164,7 @@ void addItem()
     char input[128];
     unsigned short quantity;
     unsigned short item_next_index = getAmountOfitems();
-    
+
     printf("Enter item name: ");
     scanf("%[0-9a-zA-Z ]", &input);
     strcpy(items[item_next_index].item_name, input);
@@ -145,20 +172,27 @@ void addItem()
 
     printf("Enter item quantity: ");
 
-    while (fgets(input, sizeof(input), stdin)) {
+    while (fgets(input, sizeof(input), stdin))
+    {
         quantity = strtol(input, &p, 10);
-        if (p == input || *p != '\n') {
-            printf("Invalid input for quantity entered. \n");
+        if (p == input || *p != '\n')
+        {
+            system("cls");
+            red("Invalid input for quantity entered !\n");
+            yellow("Adding item\n");
+            printf("Enter item name: %s\n", items[item_next_index].item_name);
             printf("Enter item quantity: ");
-        } else {
+        }
+        else
+        {
             items[item_next_index].item_quantity = quantity;
             break;
         }
     }
 
     fflush(stdin);
-
-    printf("Item successfully added! \n");
+    system("cls");
+    green("Item '%s' successfully added ! \n", items[item_next_index].item_name);
 }
 
 void updateItem()
@@ -169,22 +203,27 @@ void updateItem()
     unsigned amount_of_items = getAmountOfitems();
     unsigned short quantity;
 
-
-    if (amount_of_items > 0) {
-        printf("Enter item name: \n");
+    if (amount_of_items > 0)
+    {
+        printf("Enter item name: ");
         scanf("%[0-9a-zA-Z ]", &name);
         fflush(stdin);
 
-        for (unsigned short i = 0; i < amount_of_items; i++) {
-            if (strcmp(name, items[i].item_name) == 0) {
-                printf("Updating item: %s \n", name);
+        for (unsigned short i = 0; i < amount_of_items; i++)
+        {
+            if (strcmp(name, items[i].item_name) == 0)
+            {
+                system("cls");
+                yellow("Updating Item : ");
+                green("%s\n", name);
                 printf("To update item name, enter the new name for the item. \n");
-                printf("If not updating item name, press enter without typing anything. \n");
-                printf("Enter item new name: ");
-                
+                printf("If not updating item name, press enter without typing anything.\n");
+                cyan("New name: ");
+
                 fgets(name, 100, stdin);
 
-                if (strcmp(name, "") == 0) {
+                if (strcmp(name, "") == 0)
+                {
                     printf("Item new name is: %s \n", name);
                     strcpy(items[0].item_name, name);
                 }
@@ -193,27 +232,35 @@ void updateItem()
 
                 printf("To update item quantity, enter the new quantity for the item. \n");
                 printf("If not updating item quantity, press enter without typing anything. \n");
-                printf("Enter item new quantity: ");
+                cyan("New quantity: ");
 
-                while (fgets(input, sizeof(input), stdin)) {
+                while (fgets(input, sizeof(input), stdin))
+                {
                     quantity = strtol(input, &p, 10);
-                    if (p == input || *p != '\n') {
-                        printf("Invalid input for quantity entered. \n");
-                        printf("Enter item new quantity: ");
-                    } else {
+                    if (p == input || *p != '\n')
+                    {
+                        red("Invalid input for quantity entered. \n");
+                        cyan("New quantity: ");
+                    }
+                    else
+                    {
                         items[i].item_quantity = quantity;
                         break;
                     }
                 }
 
                 fflush(stdin);
-                printf("Item successfully updated! \n");
+                system("cls");
+                green("Item successfully updated !\n");
                 return;
             }
         }
-        printf("No item by the name of: %s exists. \n", name);
-    } else {
-        printf("No items in the system to update. \n");
+        system("cls");
+        red("Item '%s' does not exists. \n", name);
+    }
+    else
+    {
+        red("No items in the system to update.  ");
     }
 }
 
@@ -221,33 +268,47 @@ void deleteItem(char action[])
 {
     unsigned amount_of_items = getAmountOfitems();
     unsigned short shift_down = 0;
-    printf("Searching for item: %s \n", action);
 
-    if (amount_of_items > 0) {
-        if (strcmp(action, "all") != 0) {
-            for (unsigned short i = 0; i < amount_of_items; i++) {
+    printf("Searching for item: ");
+    green("%s\n", action);
+
+    if (amount_of_items > 0)
+    {
+        if (strcmp(action, "all") != 0)
+        {
+            for (unsigned short i = 0; i < amount_of_items; i++)
+            {
                 //  If action matches with item name, clear array element
                 //  Then set flag to push elements down to occupy cleared array element
-                if (strcmp(items[i].item_name, action) == 0) {
+                if (strcmp(items[i].item_name, action) == 0)
+                {
                     strcpy(items[i].item_name, "");
                     items[i].item_quantity = 0;
                     shift_down = 1;
                 }
                 //  Push elements down to occupy cleared array element
-                if (shift_down) {
+                if (shift_down)
+                {
                     items[i] = items[i + 1];
                 }
             }
-            printf("Item successfully deleted! \n");
-        } else {
-            for (unsigned short i = 0; i < amount_of_items; i++) {
+            system("cls");
+            green("Item successfully deleted !\n");
+        }
+        else
+        {
+            for (unsigned short i = 0; i < amount_of_items; i++)
+            {
                 strcpy(items[i].item_name, "");
                 items[i].item_quantity = 0;
             }
-            printf("All items successfully deleted! \n");
+            system("cls");
+            green("All items successfully deleted !\n");
         }
-    } else {
-        printf("No items in the system to delete. \n");
+    }
+    else
+    {
+        red("No items in the system to delete\n");
     }
 }
 
@@ -255,22 +316,29 @@ void saveSession()
 {
     unsigned short amount_of_items = getAmountOfitems();
     printf("Saving all (%hu) items from current session, please wait. \n", amount_of_items);
-    if (amount_of_items > 0) {
-        for (unsigned short i = 0; i < amount_of_items; i++) {
+    if (amount_of_items > 0)
+    {
+        for (unsigned short i = 0; i < amount_of_items; i++)
+        {
             char temp[255] = "";
-            char quantity[8]= "";
+            char quantity[8] = "";
             sprintf(quantity, "%hu", items[i].item_quantity);
             strcat(temp, items[i].item_name);
             strcat(temp, ",");
             strcat(temp, quantity);
             strcat(temp, "\n");
-            if (i == 0) {
+            if (i == 0)
+            {
                 writeToFile(temp);
-            } else {
+            }
+            else
+            {
                 addToFile(temp);
             }
         }
-    } else {
+    }
+    else
+    {
         writeToFile("");
     }
     printf("All items successfully saved. \n");
@@ -283,14 +351,16 @@ void loadFromLast()
 
     printf("Retrieving data from preivous session, please wait. \n");
     readFile(existing_items);
-    printf("Previous session had: %hu items. \n", existing_items_amount);
-    
-    for (unsigned short i = 0; i < existing_items_amount; i++) {
+    printf("Previous session had: %hu  \n", existing_items_amount);
+
+    for (unsigned short i = 0; i < existing_items_amount; i++)
+    {
         unsigned short j = 0;
         char temp[2][128];
         char *pch = strtok(existing_items[i], ",");
 
-        while (pch != NULL) {
+        while (pch != NULL)
+        {
             strcpy(temp[j++], pch);
             pch = strtok(NULL, "");
         }

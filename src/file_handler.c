@@ -5,7 +5,7 @@ unsigned short checkFileExists()
     return !0;
 }
 
-unsigned short getFileLines()
+unsigned short getFileLines(void)
 {
     FILE *fp;
     unsigned short lines = 0;
@@ -22,19 +22,20 @@ unsigned short getFileLines()
     }
 
     fclose(fp);
+
     return lines;
 }
 
-void readFile(char existing_items[512][255])
+void readFile(char existing_items[512][512])
 {
     unsigned short file_lines = getFileLines();
 
-    FILE *fp = NULL; 
+    FILE *fp; 
 
     fp = fopen(DATA_FILE, "r");
 
     for (unsigned short i = 0; i < file_lines; i++) {
-        fgets(existing_items[i], 255, fp);
+        fgets(existing_items[i], 512, fp);
     }
 
     fflush(stdin);

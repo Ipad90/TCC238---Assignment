@@ -3,24 +3,32 @@
 #include <stdlib.h>
 #include <string.h>
 
-#define DISPLAY_LENGTH 30
+#define DISPLAY_LENGTH 40
 
 struct ItemDetails;
 
-void searchItem(unsigned short amount_of_items, char item_name[]);
+unsigned short getAmountOfItems(void);
 
-void viewItem(char action[]);
+struct ItemDetails *searchItem(unsigned short amount_of_items, char item_name[]);
+
+void viewItem(char input[]);
+
+void printHeaderOrFooter(void);
 
 void displayIndividualItem(struct ItemDetails item_to_display, unsigned short print_header, unsigned short print_footer);
 
-void addItem();
+void addItem(void);
 
-void updateItem();
+void updateItem(void);
 
 void deleteItem(char action[]);
 
-void saveSession();
+void saveSession(unsigned short to_output);
 
-void loadFromLast();
+void loadFromLast(void);
 
-void test();
+void reOrderAfterDelete(unsigned short amount_of_items, unsigned short start_position);
+
+unsigned short checkIfKeywordReserved(char output_text[], char keyword[]);
+
+unsigned short checkIfItemNameExists(char output_text[], char name[]);

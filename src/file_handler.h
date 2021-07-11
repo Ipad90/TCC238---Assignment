@@ -6,11 +6,11 @@
 
 unsigned short checkFileExists();
 
-unsigned short getFileLines();
+unsigned short getFileLines(void);
 
-void readFile(char existing_items[512][255]);
+void readFile(char existing_items[512][512]);
 
-void createFile();
+void createFile(void);
 
 void addToFile(char value[]);
 

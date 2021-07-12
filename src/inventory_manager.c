@@ -121,11 +121,24 @@ void displayIndividualItem(struct ItemDetails item_to_display, unsigned short pr
 {
     unsigned short item_name_length = 0;
     unsigned short item_quantity_length = 0;
+    unsigned short item_price_length = 0;
+    unsigned short item_supplier_length = 0;
+    unsigned short item_worth_length = 0;
     unsigned short longest_attribute_length = 0;
     unsigned short j = 0;
 
+    char stringed_float[16];
+
+    sprintf(stringed_float, "%.2f", item_to_display.item_price);
+    item_price_length = strlen(stringed_float);
+
+    strcpy(stringed_float, "");
+    sprintf(stringed_float, "%.2f", (item_to_display.item_price * item_to_display.item_quantity));
+    item_worth_length = strlen(stringed_float);
+
     item_name_length = strlen(item_to_display.item_name);
     item_quantity_length = floor(log10(abs(item_to_display.item_quantity))) + 1;
+    item_supplier_length = strlen(item_to_display.item_supplier);
 
     longest_attribute_length = (item_name_length >= item_quantity_length) ? item_name_length : item_quantity_length;
     j = (item_name_length >= item_quantity_length) ? item_quantity_length : item_name_length;
@@ -159,9 +172,38 @@ void displayIndividualItem(struct ItemDetails item_to_display, unsigned short pr
     }
 
     printf("| Quantity | %d", item_to_display.item_quantity);
-    printf("| Price    | %.2f | \n", item_to_display.item_price);
-    printf("| Supplier | %s | \n", item_to_display. item_supplier);
-    printf("| Worth of all item: | %.2f | \n", (item_to_display.item_price * item_to_display.item_quantity));
+    while (item_quantity_length < DISPLAY_LENGTH) {
+        printf(" ");
+        item_quantity_length++;
+    }
+    printf(" | \n");
+
+    printf("| Price    | %.2f", item_to_display.item_price);
+    while (item_price_length < DISPLAY_LENGTH) {
+        printf(" ");
+        item_price_length++;
+    }
+    printf(" | \n");
+
+    if (item_supplier_length > DISPLAY_LENGTH) {
+        printf("| Supplier | %s | \n", item_to_display. item_supplier);
+    } else {
+        printf("| Supplier | %s", item_to_display.item_supplier);
+        while (item_supplier_length < DISPLAY_LENGTH) {
+            printf(" ");
+            item_supplier_length++;
+        }
+        printf(" | \n");
+    }
+
+    printHeaderOrFooter();
+
+    printf("| Worth    | %.2f", (item_to_display.item_price * item_to_display.item_quantity));
+    while (item_worth_length < DISPLAY_LENGTH) {
+        printf(" ");
+        item_worth_length++;
+    }
+    printf(" | \n");
 
     if (print_footer) {
         printHeaderOrFooter();

@@ -40,24 +40,24 @@ int main(void)
                         continue_running = 0;
                         break;
                     case 1:
-                        printf("Viewing item \n");
-                        printf("To view all items, type \"all\"\n");
-                        printf("To view all items, type \"all\"\n");
+                        printf("Viewing item. \n");
+                        printf("To view all items, type \"all\". \n");
+                        printf("To view all items from a particular supplier, type \"supplier\". \n");
                         printf("To view a specific item, type the name of the item. \n");
                         scanf("%[0-9a-zA-Z ]", input);
                         viewItem(input);
                         break;
                     case 2:
-                        printf("Adding item \n");
+                        printf("Adding item. \n");
                         addItem();
                         break;
                     case 3:
-                        printf("Updating item \n");
+                        printf("Updating item. \n");
                         updateItem();
                         break;
                     case 4:
-                        printf("Deleting item \n");
-                        printf("To delete all items, type \"all\"\n");
+                        printf("Deleting item. \n");
+                        printf("To delete all items, type \"all\". \n");
                         printf("To delete a specific item, type the name of the item. \n");
                         scanf("%[0-9a-zA-Z ]", &input);
                         deleteItem(input);

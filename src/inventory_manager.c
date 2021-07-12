@@ -67,14 +67,15 @@ void viewItem(char input[])
                 print_footer = 0;
             }
         } else if (stricmp(input, "supplier") == 0) {
+            unsigned short something_printed = 0;
             char supplier[128];
 
             fflush(stdin);
             printf("Enter item supplier name: ");
             fgets(supplier,sizeof(supplier), stdin);
-            printf("Viewing items from %s \n", supplier);
-
             supplier[strcspn(supplier, "\n")] = 0;
+
+            printf("Viewing items supplied from supplier: \"%s\". \n", supplier);
 
             for (unsigned short i = 0; i < amount_of_items; i++) {
                 if (strcmp(supplier, items[i].item_supplier) == 0) {
@@ -91,7 +92,12 @@ void viewItem(char input[])
                     print_header = 0;
                 }
             }
-            printHeaderOrFooter();
+
+            if (something_printed) {
+                printHeaderOrFooter();
+            } else {
+                printf("No item from supplier: \"%s\" found. \n", supplier);
+            }
         } else {
             ItemDetails *found_item_pointer = searchItem(amount_of_items, input);
             if (found_item_pointer != NULL) {

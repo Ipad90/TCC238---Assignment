@@ -2,16 +2,14 @@
 #include <stdlib.h>
 #include <string.h>
 
-#define DATA_FILE "data/data.csv"
+unsigned short checkFileExistence(char file_name[]);
 
-unsigned short checkFileExists();
+unsigned short getFileLines(char file_name[]);
 
-unsigned short getFileLines(void);
+void readFile(char file_name[], char existing_items[512][512]);
 
-void readFile(char existing_items[512][512]);
+void createFile(char file_name[]);
 
-void createFile(void);
+void addToFile(char file_name[], char value[]);
 
-void addToFile(char value[]);
-
-void writeToFile(char details[]);
+void writeToFile(char file_name[], char details[]);

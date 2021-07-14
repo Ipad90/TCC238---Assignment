@@ -10,20 +10,47 @@ typedef struct ItemDetails
 } ItemDetails;
 
 ItemDetails items[512];
+char current_data_file[64] = "";
 
 const char RESERVED_KEYWORDS[2][16] = {"all", "supplier"};
 
-unsigned short getAmountOfItems(void)
+void setCurrentDataFile(char file_name[])
 {
-    unsigned short index = 0;
-
-    while (strcmp(items[index].item_name, "") != 0) {
-        index++;
-    }
-
-    return index;
+    strcpy(current_data_file, file_name);
 }
 
+/**
+ *  Parameters
+ *      None
+ * 
+ *  Return values
+ *      Returns the amount of items in the ItemDetails array,
+ *      not the allocated array size.
+ */
+unsigned short getAmountOfItems(void)
+{
+    unsigned short item_amount = 0;
+
+    while (strcmp(items[item_amount].item_name, "") != 0) {
+        item_amount++;
+    }
+
+    return item_amount;
+}
+
+/**
+ *  Parameters
+ *      Amount of items
+ *      Item name parameter.
+ * 
+ *  What this does
+ *      Searches for the item in the ItemDetails array based on the item name parameter.
+ *      Used with the view and update item function.
+ * 
+ *  Return values
+ *      Returns the pointer address of the item if the item is found.
+ *      Returns NULL if no item is found.
+ */
 struct ItemDetails *searchItem(unsigned short amount_of_items, char item_name[])
 {
     printf("Searching for item: %s \n", item_name);
@@ -40,6 +67,13 @@ struct ItemDetails *searchItem(unsigned short amount_of_items, char item_name[])
     return NULL;
 }
 
+/**
+ *  Parameters
+ * 
+ *  What this does
+ * 
+ *  Return values
+ */
 void viewItem(char input[])
 {
     unsigned amount_of_items = getAmountOfItems();
@@ -50,7 +84,6 @@ void viewItem(char input[])
         if (stricmp(input, "all") == 0) {
             printf("Viewing all items. \n");
             printf("Amount of items: %d \n", amount_of_items);
-            printf("Inventory total worth: \n");
 
             for (unsigned short i = 0; i < amount_of_items; i++) {
                 if (i >= 0) {
@@ -79,6 +112,7 @@ void viewItem(char input[])
 
             for (unsigned short i = 0; i < amount_of_items; i++) {
                 if (strcmp(supplier, items[i].item_supplier) == 0) {
+                    something_printed = 1;
                     if (i >= 0) {
                         print_header = 1;
                     }
@@ -105,10 +139,17 @@ void viewItem(char input[])
             }
         }
     } else {
-        printf("No items to be viewed. \n");
+        printf("No items in system to be viewed. \n");
     }
 }
 
+/**
+ *  Parameters
+ * 
+ *  What this does
+ * 
+ *  Return values
+ */
 void printHeaderOrFooter(void)
 {
     unsigned short i = 0;
@@ -123,6 +164,13 @@ void printHeaderOrFooter(void)
     printf("-|\n");
 }
 
+/**
+ *  Parameters
+ * 
+ *  What this does
+ * 
+ *  Return values
+ */
 void displayIndividualItem(struct ItemDetails item_to_display, unsigned short print_header, unsigned short print_footer)
 {
     unsigned short item_name_length = 0;
@@ -216,6 +264,16 @@ void displayIndividualItem(struct ItemDetails item_to_display, unsigned short pr
     }
 }
 
+/**
+ *  Parameters
+ *      None.
+ * 
+ *  What this does
+ *      Adds an item into the system.
+ * 
+ *  Return values
+ *      None.
+ */
 void addItem(void)
 {
     unsigned short item_next_index = getAmountOfItems();
@@ -290,10 +348,20 @@ void addItem(void)
     strcat(temp, input);
     strcat(temp, "\n");
 
-    addToFile(temp);
+    addToFile(DATA_FILE, temp);
     printf("Item \"%s\" successfully added! \n", items[item_next_index].item_name);
 }
 
+/**
+ *  Parameters
+ *      None.
+ * 
+ *  What this does
+ *      Updates the item specified by the user. 
+ * 
+ *  Return values
+ *      None.
+ */
 void updateItem(void)
 {
     char *p;
@@ -394,6 +462,13 @@ void updateItem(void)
     }
 }
 
+/**
+ *  Parameters
+ * 
+ *  What this does
+ * 
+ *  Return values
+ */
 void deleteItem(char action[])
 {
     unsigned short amount_of_items = getAmountOfItems();
@@ -426,6 +501,13 @@ void deleteItem(char action[])
     }
 }
 
+/**
+ *  Parameters
+ * 
+ *  What this does
+ * 
+ *  Return values
+ */
 void saveSession(unsigned short to_output)
 {
     unsigned short amount_of_items = getAmountOfItems();
@@ -436,29 +518,31 @@ void saveSession(unsigned short to_output)
 
     if (amount_of_items > 0) {
         for (unsigned short i = 0; i < amount_of_items; i++) {
-            char temp[512] = "";
-            char quantity[16] = "";
-            char price[32] = "";
+            if (strcmp(items[i].item_name, "") != 0) {
+                char temp[512] = "";
+                char quantity[16] = "";
+                char price[32] = "";
 
-            sprintf(quantity, "%d", items[i].item_quantity);
-            sprintf(price, "%.2f", items[i].item_price);
-            strcat(temp, items[i].item_name);
-            strcat(temp, ",");
-            strcat(temp, quantity);
-            strcat(temp, ",");
-            strcat(temp, price);
-            strcat(temp, ",");
-            strcat(temp, items[i].item_supplier);
-            strcat(temp, "\n");
+                sprintf(quantity, "%d", items[i].item_quantity);
+                sprintf(price, "%.2f", items[i].item_price);
+                strcat(temp, items[i].item_name);
+                strcat(temp, ",");
+                strcat(temp, quantity);
+                strcat(temp, ",");
+                strcat(temp, price);
+                strcat(temp, ",");
+                strcat(temp, items[i].item_supplier);
+                strcat(temp, "\n");
 
-            if (i == 0) {
-                writeToFile(temp);
-            } else {
-                addToFile(temp);
+                if (i == 0) {
+                    writeToFile(DATA_FILE, temp);
+                } else {
+                    addToFile(DATA_FILE, temp);
+                }
             }
         }
     } else {
-        writeToFile("");
+        writeToFile(DATA_FILE, "");
     }
 
     if (to_output) {
@@ -466,13 +550,22 @@ void saveSession(unsigned short to_output)
     }
 }
 
-void loadFromLast(void)
+/**
+ *  Parameters
+ * 
+ *  What this does
+ * 
+ *  Return values
+ */
+void loadFromLast(char file_name[])
 {
     char existing_items[512][512];
-    unsigned short existing_items_amount = getFileLines();
+    unsigned short existing_items_amount = getFileLines(file_name);
 
-    printf("Retrieving data from preivous session, please wait. \n");
-    readFile(existing_items);
+    setCurrentDataFile(file_name);
+
+    printf("Retrieving data from data file, please wait. \n");
+    readFile(file_name, existing_items);
 
     for (unsigned short i = 0; i < existing_items_amount; i++) {
         unsigned short j = 0;
@@ -491,6 +584,18 @@ void loadFromLast(void)
     }
 }
 
+void clearSession(void)
+{
+    while 
+}
+
+/**
+ *  Parameters
+ * 
+ *  What this does
+ * 
+ *  Return values
+ */
 void reOrderAfterDelete(unsigned short amount_of_items, unsigned short start_position)
 {
     while (start_position < amount_of_items) {
@@ -499,12 +604,23 @@ void reOrderAfterDelete(unsigned short amount_of_items, unsigned short start_pos
     }
 }
 
+/**
+ *  Parameters
+ *      
+ *  What this does
+ *      Checks if the keyword parameter is a system reserved keyword.
+ * 
+ *  Return values
+ *      Returns 1 if the keyword is a system reserved keword,
+ *      returns 0 if the keyword is not a system reserved keyword.
+ */
 unsigned short checkIfKeywordReserved(char output_text[], char keyword[])
 {
     unsigned short amount_of_reserved_keywords = sizeof(RESERVED_KEYWORDS) / sizeof(RESERVED_KEYWORDS[0]);
     unsigned short i = 0;
 
     while (i < amount_of_reserved_keywords) {
+        //  Checks without taking into account case sensitivity
         if (stricmp(keyword, RESERVED_KEYWORDS[i++]) == 0) {
             printf("%s", output_text);
             return 1;
@@ -514,12 +630,23 @@ unsigned short checkIfKeywordReserved(char output_text[], char keyword[])
     return 0;
 }
 
+/**
+ *  Parameters
+ * 
+ *  What this does
+ *      Checks if an item name matches with any of the existing item names.
+ * 
+ *  Return values
+ *      Returns 1 if the name exists already,
+ *      returns 0 if the keyword is the name does not exist.
+ */
 unsigned short checkIfItemNameExists(char output_text[], char name[])
 {
     unsigned short amount_of_items = getAmountOfItems();
     unsigned short i = 0;
 
     while (i < amount_of_items) {
+        //  Checks without taking into account case sensitivity
         if (stricmp(name, items[i++].item_name) == 0) {
             printf("%s", output_text);
             return 1;
@@ -527,4 +654,27 @@ unsigned short checkIfItemNameExists(char output_text[], char name[])
     }
 
     return 0;
+}
+
+/**
+ *  Parameters
+ *      None.
+ * 
+ *  What this does
+ *      Checks if the data file exists, if does not exist,
+ *      create the data file.
+ * 
+ *  Return values
+ *      None.
+ */
+unsigned short checkDataFileExists(char file_name[], unsigned short bypass)
+{
+    if (!checkFileExistence(file_name)) {
+        if (bypass) {
+            createFile(file_name);
+            return 1;
+        } else {
+            return 0;
+        }
+    }
 }

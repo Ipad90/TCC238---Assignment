@@ -11,7 +11,8 @@ int main(void)
     unsigned short continue_running = 1;
     char input[128];
 
-    loadFromLast();
+    checkDataFileExists(DATA_FILE, 0);
+    loadFromLast(DATA_FILE);
     printf("\n");
 
     while (continue_running) {
@@ -40,7 +41,9 @@ int main(void)
                         continue_running = 0;
                         break;
                     case 1:
-                        printf("Viewing item. \n");
+                        printf("------------------------ \n");
+                        printf("----- Viewing item ----- \n");
+                        printf("------------------------ \n");
                         printf("To view all items, type \"all\". \n");
                         printf("To view all items from a particular supplier, type \"supplier\". \n");
                         printf("To view a specific item, type the name of the item. \n");
@@ -48,19 +51,42 @@ int main(void)
                         viewItem(input);
                         break;
                     case 2:
-                        printf("Adding item. \n");
+                        printf("------------------------ \n");
+                        printf("----- Adding item ------ \n");
+                        printf("------------------------ \n");
                         addItem();
                         break;
                     case 3:
-                        printf("Updating item. \n");
+                        printf("------------------------ \n");
+                        printf("----- Updating item ---- \n");
+                        printf("------------------------ \n");
                         updateItem();
                         break;
                     case 4:
-                        printf("Deleting item. \n");
+                        printf("------------------------ \n");
+                        printf("----- Deleting item ---- \n");
+                        printf("------------------------ \n");
                         printf("To delete all items, type \"all\". \n");
                         printf("To delete a specific item, type the name of the item. \n");
-                        scanf("%[0-9a-zA-Z ]", &input);
+                        printf("Enter item name: ");
+                        fgets(input, sizeof(input), stdin);
+                        input[strcspn(input, "\n")] = 0;
                         deleteItem(input);
+                        break;
+                    case 5:
+                        printf("Switch data file \n");
+                        printf("Enter file name: ");
+                        fgets(input, sizeof(input), stdin);
+                        if (checkDataFileExists(input, 0)) {
+                            printf("No file found want to create file? \n");
+                            //  todo: prompt create file
+                            clearSession();
+                            loadFromDataFile(input);
+                        } else {
+                            clearSession();
+                            loadFromLast(input);
+                        }
+                        fflush(stdin);
                         break;
                     default:
                         printf("No valid action entered. \n");

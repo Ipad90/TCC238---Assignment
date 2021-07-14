@@ -10,9 +10,10 @@ int main(void)
     unsigned short action;
     unsigned short continue_running = 1;
     char input[128];
+    char secondary_input[4];
 
     checkDataFileExists(DATA_FILE, 0);
-    loadFromLast(DATA_FILE);
+    loadFromDataFile(DATA_FILE);
     printf("\n");
 
     while (continue_running) {
@@ -75,18 +76,37 @@ int main(void)
                         break;
                     case 5:
                         printf("Switch data file \n");
-                        printf("Enter file name: ");
-                        fgets(input, sizeof(input), stdin);
-                        if (checkDataFileExists(input, 0)) {
-                            printf("No file found want to create file? \n");
-                            //  todo: prompt create file
-                            clearSession();
-                            loadFromDataFile(input);
-                        } else {
-                            clearSession();
-                            loadFromLast(input);
+
+                        while (1) {
+                            printf("Enter file name with the file format: ");
+                            fgets(input, sizeof(input), stdin);
+                            input[strcspn(input, "\n")] = 0;
+
+                            if (!checkDataFileExists(input, 0)) {
+                                printf("No file found want to create file? \n");
+
+                                fgets(secondary_input, sizeof(secondary_input), stdin);
+                                secondary_input[strcspn(secondary_input, "\n")] = 0;
+
+                                if (stricmp(secondary_input, "yes") == 0) {
+                                    createDataFile(input);
+                                    clearSession();
+                                    loadFromDataFile(input);
+                                    break;
+                                } else if (stricmp(secondary_input, "no") == 0) {
+                                    printf("Not creating new data file, using current data. \n");
+                                    break;
+                                } else {
+                                    printf("Invalid input. \n");
+                                }
+                            } else {
+                                printf("Wtf \n");
+                                clearSession();
+                                loadFromDataFile(input);
+                                break;
+                            }
+                            fflush(stdin);
                         }
-                        fflush(stdin);
                         break;
                     default:
                         printf("No valid action entered. \n");

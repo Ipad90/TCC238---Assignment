@@ -15,6 +15,7 @@ unsigned short checkFileExistence(char file_name[])
     FILE *fp;
 
     if (fp = fopen(file_name, "r")) {
+        printf("found lmao");
         fclose(fp);
         return 1;
     }

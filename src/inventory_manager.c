@@ -14,11 +14,6 @@ char current_data_file[64] = "";
 
 const char RESERVED_KEYWORDS[2][16] = {"all", "supplier"};
 
-void setCurrentDataFile(char file_name[])
-{
-    strcpy(current_data_file, file_name);
-}
-
 /**
  *  Parameters
  *      None
@@ -348,7 +343,7 @@ void addItem(void)
     strcat(temp, input);
     strcat(temp, "\n");
 
-    addToFile(DATA_FILE, temp);
+    addToFile(current_data_file, temp);
     printf("Item \"%s\" successfully added! \n", items[item_next_index].item_name);
 }
 
@@ -535,14 +530,14 @@ void saveSession(unsigned short to_output)
                 strcat(temp, "\n");
 
                 if (i == 0) {
-                    writeToFile(DATA_FILE, temp);
+                    writeToFile(current_data_file, temp);
                 } else {
-                    addToFile(DATA_FILE, temp);
+                    addToFile(current_data_file, temp);
                 }
             }
         }
     } else {
-        writeToFile(DATA_FILE, "");
+        writeToFile(current_data_file, "");
     }
 
     if (to_output) {
@@ -557,12 +552,12 @@ void saveSession(unsigned short to_output)
  * 
  *  Return values
  */
-void loadFromLast(char file_name[])
+void loadFromDataFile(char file_name[])
 {
     char existing_items[512][512];
     unsigned short existing_items_amount = getFileLines(file_name);
 
-    setCurrentDataFile(file_name);
+    strcpy(current_data_file, file_name);
 
     printf("Retrieving data from data file, please wait. \n");
     readFile(file_name, existing_items);
@@ -586,7 +581,15 @@ void loadFromLast(char file_name[])
 
 void clearSession(void)
 {
-    while 
+    unsigned short amount_of_items = getAmountOfItems();
+
+    if (amount_of_items > 0) {
+        for (unsigned short i = 0; i < amount_of_items; i++) {
+            if (strcmp(items[i].item_name, "") != 0) {
+                strcpy(items[i].item_name, "");
+            }
+        }
+    }
 }
 
 /**
@@ -676,5 +679,12 @@ unsigned short checkDataFileExists(char file_name[], unsigned short bypass)
         } else {
             return 0;
         }
+    } else {
+        return 1;
     }
+}
+
+void createDataFile(char file_name[])
+{
+    createFile(file_name);
 }
